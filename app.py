@@ -7,19 +7,21 @@ app = Flask(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
-@app.route("/", methods=("GET", "POST"))
+@app.route("/", methods=("GET",))
 def index():
-    if request.method == "POST":
-        animal = request.form["animal"]
-        response = openai.Completion.create(
-            model="text-davinci-003",
-            prompt=generate_prompt(animal),
-            temperature=0.6,
-        )
-        return redirect(url_for("index", result=response.choices[0].text))
-
-    result = request.args.get("result")
-    return render_template("index.html", result=result)
+    words = request.args.get("w")
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=generate_prompt(words),
+        temperature=0.9,
+        max_tokens=150,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0.6,
+        stop=[" Human:", " AI:"]
+    )
+    print(response.choices)
+    return response.choices[0].text
 
 
 # def generate_prompt(animal):
