@@ -1,7 +1,7 @@
 import os
 
 import openai
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, jsonify
 
 app = Flask(__name__)
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -21,7 +21,8 @@ def index():
         stop=[" Human:", " AI:"]
     )
     print(response.choices)
-    return response.choices[0].text
+    data_dict = {"data":response.choices[0].text}
+    return jsonify(data_dict)
 
 
 # def generate_prompt(animal):
